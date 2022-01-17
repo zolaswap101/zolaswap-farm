@@ -1,20 +1,20 @@
 pragma solidity 0.8.0;
 
-import './math/SafeMath.sol';
-import './token/BEP20/IBEP20.sol';
-import './token/BEP20/SafeBEP20.sol';
+import "./math/SafeMath.sol";
+import "./token/BEP20/IBEP20.sol";
+import "./token/BEP20/SafeBEP20.sol";
 
 // import "@nomiclabs/buidler/console.sol";
 
-// SousChef is the chef of new tokens. He can make yummy food and he is a fair guy as well as WAGFarm.
-contract WAGStakingPool {
+// SousChef is the chef of new tokens. He can make yummy food and he is a fair guy as well as AstroFarm.
+contract AstroStakingPool {
     using SafeMath for uint256;
     using SafeBEP20 for IBEP20;
 
     // Info of each user.
     struct UserInfo {
-        uint256 amount;   // How many SYRUP tokens the user has provided.
-        uint256 rewardDebt;  // Reward debt. See explanation below.
+        uint256 amount; // How many SYRUP tokens the user has provided.
+        uint256 rewardDebt; // Reward debt. See explanation below.
         uint256 rewardPending;
         //
         // We do some fancy math here. Basically, any point in time, the amount of SYRUPs
@@ -32,7 +32,7 @@ contract WAGStakingPool {
 
     // Info of Pool
     struct PoolInfo {
-        uint256 lastRewardTimestamp;  // Last block number that Rewards distribution occurs.
+        uint256 lastRewardTimestamp; // Last block number that Rewards distribution occurs.
         uint256 accRewardPerShare; // Accumulated reward per share, times 1e12. See below.
     }
 
@@ -44,7 +44,7 @@ contract WAGStakingPool {
     // Info.
     PoolInfo public poolInfo;
     // Info of each user that stakes Syrup tokens.
-    mapping (address => UserInfo) public userInfo;
+    mapping(address => UserInfo) public userInfo;
 
     // addresses list
     address[] public addressList;
@@ -81,7 +81,11 @@ contract WAGStakingPool {
     }
 
     // Return reward multiplier over the given _from to _to block.
-    function getMultiplier(uint256 _from, uint256 _to) internal view returns (uint256) {
+    function getMultiplier(uint256 _from, uint256 _to)
+        internal
+        view
+        returns (uint256)
+    {
         if (_to <= bonusEndTimestamp) {
             return _to.sub(_from);
         } else if (_from >= bonusEndTimestamp) {
@@ -98,11 +102,22 @@ contract WAGStakingPool {
         uint256 accRewardPerShare = pool.accRewardPerShare;
         uint256 stakedSupply = syrup.balanceOf(address(this));
         if (block.timestamp > pool.lastRewardTimestamp && stakedSupply != 0) {
-            uint256 multiplier = getMultiplier(pool.lastRewardTimestamp, block.timestamp);
+            uint256 multiplier = getMultiplier(
+                pool.lastRewardTimestamp,
+                block.timestamp
+            );
             uint256 tokenReward = multiplier.mul(rewardPerSecond);
-            accRewardPerShare = accRewardPerShare.add(tokenReward.mul(1e12).div(stakedSupply));
+            accRewardPerShare = accRewardPerShare.add(
+                tokenReward.mul(1e12).div(stakedSupply)
+            );
         }
-        return user.amount.mul(accRewardPerShare).div(1e12).sub(user.rewardDebt).add(user.rewardPending);
+        return
+            user
+                .amount
+                .mul(accRewardPerShare)
+                .div(1e12)
+                .sub(user.rewardDebt)
+                .add(user.rewardPending);
     }
 
     // Update reward variables of the given pool to be up-to-date.
@@ -115,25 +130,36 @@ contract WAGStakingPool {
             poolInfo.lastRewardTimestamp = block.timestamp;
             return;
         }
-        uint256 multiplier = getMultiplier(poolInfo.lastRewardTimestamp, block.timestamp);
+        uint256 multiplier = getMultiplier(
+            poolInfo.lastRewardTimestamp,
+            block.timestamp
+        );
         uint256 tokenReward = multiplier.mul(rewardPerSecond);
 
-        poolInfo.accRewardPerShare = poolInfo.accRewardPerShare.add(tokenReward.mul(1e12).div(syrupSupply));
+        poolInfo.accRewardPerShare = poolInfo.accRewardPerShare.add(
+            tokenReward.mul(1e12).div(syrupSupply)
+        );
         poolInfo.lastRewardTimestamp = block.timestamp;
     }
 
-
     // Deposit Syrup tokens to SousChef for Reward allocation.
     function deposit(uint256 _amount) public {
-        require (_amount > 0, 'amount 0');
+        require(_amount > 0, "amount 0");
         UserInfo storage user = userInfo[msg.sender];
         updatePool();
         syrup.safeTransferFrom(address(msg.sender), address(this), _amount);
         // The deposit behavior before farming will result in duplicate addresses, and thus we will manually remove them when airdropping.
-        if (user.amount == 0 && user.rewardPending == 0 && user.rewardDebt == 0) {
+        if (
+            user.amount == 0 && user.rewardPending == 0 && user.rewardDebt == 0
+        ) {
             addressList.push(address(msg.sender));
         }
-        user.rewardPending = user.amount.mul(poolInfo.accRewardPerShare).div(1e12).sub(user.rewardDebt).add(user.rewardPending);
+        user.rewardPending = user
+            .amount
+            .mul(poolInfo.accRewardPerShare)
+            .div(1e12)
+            .sub(user.rewardDebt)
+            .add(user.rewardPending);
         user.amount = user.amount.add(_amount);
         user.rewardDebt = user.amount.mul(poolInfo.accRewardPerShare).div(1e12);
 
@@ -142,14 +168,19 @@ contract WAGStakingPool {
 
     // Withdraw Syrup tokens from SousChef.
     function withdraw(uint256 _amount) public {
-        require (_amount > 0, 'amount 0');
+        require(_amount > 0, "amount 0");
         UserInfo storage user = userInfo[msg.sender];
         require(user.amount >= _amount, "withdraw: not enough");
 
         updatePool();
         syrup.safeTransfer(address(msg.sender), _amount);
 
-        user.rewardPending = user.amount.mul(poolInfo.accRewardPerShare).div(1e12).sub(user.rewardDebt).add(user.rewardPending);
+        user.rewardPending = user
+            .amount
+            .mul(poolInfo.accRewardPerShare)
+            .div(1e12)
+            .sub(user.rewardDebt)
+            .add(user.rewardPending);
         user.amount = user.amount.sub(_amount);
         user.rewardDebt = user.amount.mul(poolInfo.accRewardPerShare).div(1e12);
 
@@ -165,5 +196,4 @@ contract WAGStakingPool {
         user.rewardDebt = 0;
         user.rewardPending = 0;
     }
-
 }

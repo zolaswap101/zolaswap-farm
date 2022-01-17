@@ -1,8 +1,8 @@
 pragma solidity ^0.8.0;
 
-import './WAGStakingPoolInitializable.sol';
+import "./AstroStakingPoolInitializable.sol";
 
-contract WAGStakingFactory is Ownable {
+contract AstroStakingFactory is Ownable {
     event NewSousChefContract(address indexed sousChef);
     address[] public poolAddresses;
 
@@ -34,15 +34,23 @@ contract WAGStakingFactory is Ownable {
         require(_rewardToken.totalSupply() >= 0);
         require(_stakedToken != _rewardToken, "Tokens must be be different");
 
-        bytes memory bytecode = type(WAGStakingPoolInitializable).creationCode;
-        bytes32 salt = keccak256(abi.encodePacked(_stakedToken, _rewardToken, _startTimestamp));
+        bytes memory bytecode = type(AstroStakingPoolInitializable)
+            .creationCode;
+        bytes32 salt = keccak256(
+            abi.encodePacked(_stakedToken, _rewardToken, _startTimestamp)
+        );
         address sousChefAddress;
 
         assembly {
-            sousChefAddress := create2(0, add(bytecode, 32), mload(bytecode), salt)
+            sousChefAddress := create2(
+                0,
+                add(bytecode, 32),
+                mload(bytecode),
+                salt
+            )
         }
 
-        WAGStakingPoolInitializable(sousChefAddress).initialize(
+        AstroStakingPoolInitializable(sousChefAddress).initialize(
             _stakedToken,
             _rewardToken,
             _rewardPerSecond,

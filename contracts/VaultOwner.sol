@@ -1,18 +1,18 @@
 pragma solidity ^0.8.0;
 
-import './WagyuVault.sol';
+import "./AstroVault.sol";
 
 contract VaultOwner is Ownable {
     using SafeBEP20 for IBEP20;
 
-    WagyuVault public immutable wagyuVault;
+    AstroVault public immutable wagyuVault;
 
     /**
      * @notice Constructor
-     * @param _wagyuVaultAddress: WagyuVault contract address
+     * @param _wagyuVaultAddress: AstroVault contract address
      */
     constructor(address _wagyuVaultAddress) public {
-        wagyuVault = WagyuVault(_wagyuVaultAddress);
+        wagyuVault = AstroVault(_wagyuVaultAddress);
     }
 
     /**
@@ -60,12 +60,15 @@ contract VaultOwner is Ownable {
      * @notice Sets withdraw fee period
      * @dev Only callable by the contract owner.
      */
-    function setWithdrawFeePeriod(uint256 _withdrawFeePeriod) external onlyOwner {
+    function setWithdrawFeePeriod(uint256 _withdrawFeePeriod)
+        external
+        onlyOwner
+    {
         wagyuVault.setWithdrawFeePeriod(_withdrawFeePeriod);
     }
 
     /**
-     * @notice Withdraw unexpected tokens sent to the Wagyu Vault
+     * @notice Withdraw unexpected tokens sent to the Astro Vault
      */
     function inCaseTokensGetStuck(address _token) external onlyOwner {
         wagyuVault.inCaseTokensGetStuck(_token);

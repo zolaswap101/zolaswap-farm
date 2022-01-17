@@ -8,8 +8,8 @@ module.exports = {
     "libs",
     "libs",
     "SyrupBar.sol",
-    "WAGToken.sol",
-    "Timelock.sol"
+    "AstroToken.sol",
+    "Timelock.sol",
   ],
   measureStatementCoverage: false,
   measureFunctionCoverage: true,
