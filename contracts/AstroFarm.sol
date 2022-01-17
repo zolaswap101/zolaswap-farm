@@ -95,12 +95,14 @@ contract AstroFarm is Ownable {
     constructor(
         AstroToken _cake,
         AstroStake _syrup,
+        address _devaddr,
         uint256 _cakePerSecond,
         uint256 _startTimestamp,
         uint256 _endTimestamp
     ) public {
         cake = _cake;
         syrup = _syrup;
+        devaddr = _devaddr;
         cakePerSecond = _cakePerSecond;
         startTimestamp = _startTimestamp;
         endTimestamp = _endTimestamp;
@@ -409,5 +411,11 @@ contract AstroFarm is Ownable {
     // Safe cake transfer function, just in case if rounding error causes pool to not have enough CAKEs.
     function safeCakeTransfer(address _to, uint256 _amount) internal {
         syrup.safeCakeTransfer(_to, _amount);
+    }
+
+    // Update dev address by the previous dev.
+    function dev(address _devaddr) public {
+        require(msg.sender == devaddr, "dev: wut?");
+        devaddr = _devaddr;
     }
 }
