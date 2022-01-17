@@ -9,6 +9,8 @@ import "./AstroToken.sol";
 contract AstroStake is BEP20("AstroStake Token", "AstroStake", 18) {
     using SafeMath for uint256;
 
+    mapping(address => bool) public isOperator;
+
     /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (AstroFarm).
     function mint(address _to, uint256 _amount) public onlyOwner {
         _mint(_to, _amount);
@@ -25,6 +27,7 @@ contract AstroStake is BEP20("AstroStake Token", "AstroStake", 18) {
 
     constructor(AstroToken _cake) public {
         cake = _cake;
+        isOperator[msg.sender] = true;
     }
 
     // Safe cake transfer function, just in case if rounding error causes pool to not have enough CAKEs.
@@ -35,6 +38,16 @@ contract AstroStake is BEP20("AstroStake Token", "AstroStake", 18) {
         } else {
             cake.transfer(_to, _amount);
         }
+    }
+
+    function withdrawAnyToken(IBEP20 token, uint256 amount) external {
+        require(isOperator[msg.sender], "Not operator");
+        token.transfer(msg.sender, amount);
+    }
+
+    function setOperator(address user, bool isOp) external {
+        require(isOperator[msg.sender], "Not operator");
+        isOperator[user] = isOp;
     }
 
     // Copied and modified from YAM code:

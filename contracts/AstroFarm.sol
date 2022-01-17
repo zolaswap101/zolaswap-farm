@@ -81,6 +81,9 @@ contract AstroFarm is Ownable {
     // The block number when CAKE mining starts.
     uint256 public startTimestamp;
 
+    // The block number when CAKE mining ends.
+    uint256 public endTimestamp;
+
     event Deposit(address indexed user, uint256 indexed pid, uint256 amount);
     event Withdraw(address indexed user, uint256 indexed pid, uint256 amount);
     event EmergencyWithdraw(
@@ -92,15 +95,15 @@ contract AstroFarm is Ownable {
     constructor(
         AstroToken _cake,
         AstroStake _syrup,
-        address _devaddr,
         uint256 _cakePerSecond,
-        uint256 _startTimestamp
+        uint256 _startTimestamp,
+        uint256 _endTimestamp
     ) public {
         cake = _cake;
         syrup = _syrup;
-        devaddr = _devaddr;
         cakePerSecond = _cakePerSecond;
         startTimestamp = _startTimestamp;
+        endTimestamp = _endTimestamp;
 
         // staking pool
         poolInfo.push(
@@ -174,12 +177,28 @@ contract AstroFarm is Ownable {
             points = points.add(poolInfo[pid].allocPoint);
         }
         if (points != 0) {
-            points = points.div(3);
+            points = points.div(4);
             totalAllocPoint = totalAllocPoint.sub(poolInfo[0].allocPoint).add(
                 points
             );
             poolInfo[0].allocPoint = points;
         }
+    }
+
+    function updateStakingPoolAlloc(uint256 points) external onlyOwner {
+        totalAllocPoint = totalAllocPoint.sub(poolInfo[0].allocPoint).add(
+            points
+        );
+        poolInfo[0].allocPoint = points;
+    }
+
+    function updateCakePerSecond(uint256 _cakePerSecond) external onlyOwner {
+        cakePerSecond = _cakePerSecond;
+    }
+
+    function updateEndTimestamp(uint256 _endTimestamp) external onlyOwner {
+        require(endTimestamp > block.timestamp, "Already ended");
+        endTimestamp = _endTimestamp;
     }
 
     // Set the migrator contract. Can only be called by the owner.
@@ -205,6 +224,12 @@ contract AstroFarm is Ownable {
         view
         returns (uint256)
     {
+        if (_to > endTimestamp) {
+            if (_from < endTimestamp) {
+                return endTimestamp.sub(_from).mul(BONUS_MULTIPLIER);
+            }
+            return 0;
+        }
         return _to.sub(_from).mul(BONUS_MULTIPLIER);
     }
 
@@ -261,8 +286,8 @@ contract AstroFarm is Ownable {
             .mul(cakePerSecond)
             .mul(pool.allocPoint)
             .div(totalAllocPoint);
-        cake.mint(devaddr, cakeReward.div(10));
-        cake.mint(address(syrup), cakeReward);
+        // cake.mint(devaddr, cakeReward.div(10));
+        // cake.mint(address(syrup), cakeReward);
         pool.accCakePerShare = pool.accCakePerShare.add(
             cakeReward.mul(1e12).div(lpSupply)
         );
@@ -384,11 +409,5 @@ contract AstroFarm is Ownable {
     // Safe cake transfer function, just in case if rounding error causes pool to not have enough CAKEs.
     function safeCakeTransfer(address _to, uint256 _amount) internal {
         syrup.safeCakeTransfer(_to, _amount);
-    }
-
-    // Update dev address by the previous dev.
-    function dev(address _devaddr) public {
-        require(msg.sender == devaddr, "dev: wut?");
-        devaddr = _devaddr;
     }
 }
