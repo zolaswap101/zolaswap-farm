@@ -8,7 +8,7 @@ async function sleep() {
 function get(chainId) {
   const fs = require("fs");
 
-  const filename = "../wagyu-addresses/" + chainId + ".json";
+  const filename = "../astro-addresses/" + chainId + ".json";
 
   const data = fs.existsSync(filename)
     ? JSON.parse(fs.readFileSync(filename, "utf8"))
@@ -20,7 +20,7 @@ function get(chainId) {
 function save(chainId, name, value) {
   const fs = require("fs");
 
-  const filename = "../wagyu-addresses/" + chainId + ".json";
+  const filename = "../astro-addresses/" + chainId + ".json";
 
   const data = fs.existsSync(filename)
     ? JSON.parse(fs.readFileSync(filename, "utf8"))
@@ -60,11 +60,11 @@ async function main() {
   const { chainId } = await ethers.provider.getNetwork();
 
   // usage is here
-  //https://github.com/wagyu-swap/wagyu-swap-interface/blob/dev/src/constants/multicall/index.ts
+  //https://github.com/astro-swap/astro-swap-interface/blob/dev/src/constants/multicall/index.ts
 
   const data = get(chainId);
   const admins = JSON.parse(
-    require("fs").readFileSync("../wagyu-addresses/admins.json", "utf8")
+    require("fs").readFileSync("../astro-addresses/admins.json", "utf8")
   );
   const _devaddr = admins._devaddr;
 

@@ -8,7 +8,7 @@ async function sleep() {
 function get(chainId) {
   const fs = require("fs");
 
-  const filename = "../wagyu-addresses/" + chainId + ".json";
+  const filename = "../astro-addresses/" + chainId + ".json";
 
   const data = fs.existsSync(filename)
     ? JSON.parse(fs.readFileSync(filename, "utf8"))

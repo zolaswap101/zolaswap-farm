@@ -26,7 +26,7 @@ async function createTestFarms(_lpToken) {
 function get(chainId) {
   const fs = require("fs");
 
-  const filename = "../wagyu-addresses/" + chainId + ".json";
+  const filename = "../astro-addresses/" + chainId + ".json";
 
   const data = fs.existsSync(filename)
     ? JSON.parse(fs.readFileSync(filename, "utf8"))
@@ -40,7 +40,7 @@ async function main() {
 
   const data = get(chainId);
 
-  const name = "VLX_WAG_LP";
+  const name = "VLX_ASTRO_LP";
   await createTestFarms(data[name].pair);
 }
 

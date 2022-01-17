@@ -5,14 +5,14 @@ import "./AstroVault.sol";
 contract VaultOwner is Ownable {
     using SafeBEP20 for IBEP20;
 
-    AstroVault public immutable wagyuVault;
+    AstroVault public immutable astroVault;
 
     /**
      * @notice Constructor
-     * @param _wagyuVaultAddress: AstroVault contract address
+     * @param _astroVaultAddress: AstroVault contract address
      */
-    constructor(address _wagyuVaultAddress) public {
-        wagyuVault = AstroVault(_wagyuVaultAddress);
+    constructor(address _astroVaultAddress) public {
+        astroVault = AstroVault(_astroVaultAddress);
     }
 
     /**
@@ -21,7 +21,7 @@ contract VaultOwner is Ownable {
      * It makes the admin == owner.
      */
     function setAdmin() external onlyOwner {
-        wagyuVault.setAdmin(address(this));
+        astroVault.setAdmin(address(this));
     }
 
     /**
@@ -29,7 +29,7 @@ contract VaultOwner is Ownable {
      * @dev Only callable by the contract owner.
      */
     function setTreasury(address _treasury) external onlyOwner {
-        wagyuVault.setTreasury(_treasury);
+        astroVault.setTreasury(_treasury);
     }
 
     /**
@@ -37,7 +37,7 @@ contract VaultOwner is Ownable {
      * @dev Only callable by the contract owner.
      */
     function setPerformanceFee(uint256 _performanceFee) external onlyOwner {
-        wagyuVault.setPerformanceFee(_performanceFee);
+        astroVault.setPerformanceFee(_performanceFee);
     }
 
     /**
@@ -45,7 +45,7 @@ contract VaultOwner is Ownable {
      * @dev Only callable by the contract owner.
      */
     function setCallFee(uint256 _callFee) external onlyOwner {
-        wagyuVault.setCallFee(_callFee);
+        astroVault.setCallFee(_callFee);
     }
 
     /**
@@ -53,7 +53,7 @@ contract VaultOwner is Ownable {
      * @dev Only callable by the contract owner.
      */
     function setWithdrawFee(uint256 _withdrawFee) external onlyOwner {
-        wagyuVault.setWithdrawFee(_withdrawFee);
+        astroVault.setWithdrawFee(_withdrawFee);
     }
 
     /**
@@ -64,14 +64,14 @@ contract VaultOwner is Ownable {
         external
         onlyOwner
     {
-        wagyuVault.setWithdrawFeePeriod(_withdrawFeePeriod);
+        astroVault.setWithdrawFeePeriod(_withdrawFeePeriod);
     }
 
     /**
      * @notice Withdraw unexpected tokens sent to the Astro Vault
      */
     function inCaseTokensGetStuck(address _token) external onlyOwner {
-        wagyuVault.inCaseTokensGetStuck(_token);
+        astroVault.inCaseTokensGetStuck(_token);
         uint256 amount = IBEP20(_token).balanceOf(address(this));
         IBEP20(_token).safeTransfer(msg.sender, amount);
     }
@@ -81,7 +81,7 @@ contract VaultOwner is Ownable {
      * @dev Only possible when contract not paused.
      */
     function pause() external onlyOwner {
-        wagyuVault.pause();
+        astroVault.pause();
     }
 
     /**
@@ -89,6 +89,6 @@ contract VaultOwner is Ownable {
      * @dev Only possible when contract is paused.
      */
     function unpause() external onlyOwner {
-        wagyuVault.unpause();
+        astroVault.unpause();
     }
 }

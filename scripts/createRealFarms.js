@@ -29,7 +29,7 @@ async function createTestFarms(_lpToken) {
 function get(chainId) {
   const fs = require("fs");
 
-  const filename = "../wagyu-addresses/" + chainId + ".json";
+  const filename = "../astro-addresses/" + chainId + ".json";
 
   const data = fs.existsSync(filename)
     ? JSON.parse(fs.readFileSync(filename, "utf8"))
@@ -49,7 +49,7 @@ async function main() {
   const data = get(chainId);
 
   const admins = JSON.parse(
-    require("fs").readFileSync("../wagyu-addresses/admins.json", "utf8")
+    require("fs").readFileSync("../astro-addresses/admins.json", "utf8")
   );
 
   const wrappedTokens = admins.wrappedTokens[chainId.toString()];

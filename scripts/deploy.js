@@ -8,7 +8,7 @@ async function sleep() {
 function save(chainId, name, value) {
   const fs = require("fs");
 
-  const filename = "../wagyu-addresses/" + chainId + ".json";
+  const filename = "../astro-addresses/" + chainId + ".json";
 
   const data = fs.existsSync(filename)
     ? JSON.parse(fs.readFileSync(filename, "utf8"))
@@ -50,7 +50,7 @@ async function main() {
   save(chainId, "owner", signers[0]._address);
 
   // usage is here
-  //https://github.com/wagyu-swap/wagyu-swap-interface/blob/dev/src/constants/multicall/index.ts
+  //https://github.com/astro-swap/astro-swap-interface/blob/dev/src/constants/multicall/index.ts
 
   const Multicall = await deploy("Multicall2");
   const AstroToken = await deploy("AstroToken");
@@ -58,7 +58,7 @@ async function main() {
   const WVLX = await deploy("WVLX");
 
   const admins = JSON.parse(
-    require("fs").readFileSync("../wagyu-addresses/admins.json", "utf8")
+    require("fs").readFileSync("../astro-addresses/admins.json", "utf8")
   );
 
   const defaultTokens = admins.defaultTokens[chainId.toString()];
@@ -75,6 +75,7 @@ async function main() {
   //const blockNumber = await ethers.provider.getBlockNumber();
 
   const _startTimestamp = parseInt(new Date().getTime() / 1000);
+  const _endTimestamp = _startTimestamp + 3600 * 24 * 7;
   const _devaddr = admins._devaddr;
   //const bonusPeriodSeconds = 10000
   //const bonusEndTimestamp = _startTimestamp + bonusPeriodSeconds
@@ -89,6 +90,7 @@ async function main() {
     _devaddr,
     _cakePerSecond,
     _startTimestamp,
+    _endTimestamp,
   ]);
 
   const AstroVault = await deploy("AstroVault", [
@@ -105,7 +107,7 @@ async function main() {
 
   await deploy("AstroStakingFactory");
 
-  //MasterChef _chef, IBEP20 _wagyu, address _admin, address _receiver
+  //MasterChef _chef, IBEP20 _astro, address _admin, address _receiver
   //const LotteryRewardPool = await deploy("LotteryRewardPool", [AstroFarm, WagyuToken, _devaddr, _devaddr]);
 }
 

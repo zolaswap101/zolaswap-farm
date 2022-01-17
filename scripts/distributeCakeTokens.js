@@ -37,7 +37,7 @@ async function mint(address, amount) {
 function get(chainId) {
   const fs = require("fs");
 
-  const filename = "../wagyu-addresses/" + chainId + ".json";
+  const filename = "../astro-addresses/" + chainId + ".json";
 
   const data = fs.existsSync(filename)
     ? JSON.parse(fs.readFileSync(filename, "utf8"))
@@ -85,7 +85,7 @@ async function main() {
   }
 
   const admins = JSON.parse(
-    require("fs").readFileSync("../wagyu-addresses/admins.json", "utf8")
+    require("fs").readFileSync("../astro-addresses/admins.json", "utf8")
   );
 
   const airdrop = admins.airdrop[chainId.toString()];

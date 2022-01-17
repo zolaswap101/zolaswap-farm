@@ -326,9 +326,9 @@ contract AstroStakingPoolInitializable is Ownable, ReentrancyGuard {
                 lastRewardTimestamp,
                 block.timestamp
             );
-            uint256 wagyuReward = multiplier.mul(rewardPerSecond);
+            uint256 astroReward = multiplier.mul(rewardPerSecond);
             uint256 adjustedTokenPerShare = accTokenPerShare.add(
-                wagyuReward.mul(PRECISION_FACTOR).div(stakedTokenSupply)
+                astroReward.mul(PRECISION_FACTOR).div(stakedTokenSupply)
             );
             return
                 user
@@ -363,9 +363,9 @@ contract AstroStakingPoolInitializable is Ownable, ReentrancyGuard {
             lastRewardTimestamp,
             block.timestamp
         );
-        uint256 wagyuReward = multiplier.mul(rewardPerSecond);
+        uint256 astroReward = multiplier.mul(rewardPerSecond);
         accTokenPerShare = accTokenPerShare.add(
-            wagyuReward.mul(PRECISION_FACTOR).div(stakedTokenSupply)
+            astroReward.mul(PRECISION_FACTOR).div(stakedTokenSupply)
         );
         lastRewardTimestamp = block.timestamp;
     }
