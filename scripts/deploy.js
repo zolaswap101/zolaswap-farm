@@ -54,6 +54,7 @@ async function main() {
 
   const Multicall = await deploy("Multicall2");
   const AstroToken = await deploy("AstroToken");
+  const AdaToken = await deploy("AdaToken");
 
   const WVLX = await deploy("WVLX");
 
