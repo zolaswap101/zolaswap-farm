@@ -53,16 +53,23 @@ async function main() {
   //https://github.com/astro-swap/astro-swap-interface/blob/dev/src/constants/multicall/index.ts
 
   const Multicall = await deploy("Multicall2");
-  const AstroToken = await deploy("AstroToken");
-  const AdaToken = await deploy("AdaToken");
+  // const AstroToken = await deploy("AstroToken");
+  // const AdaToken = await deploy("AdaToken");
 
-  const WVLX = await deploy("WVLX");
+  // const WVLX = await deploy("WVLX");
 
   const admins = JSON.parse(
     require("fs").readFileSync("../astro-addresses/admins.json", "utf8")
   );
 
   const defaultTokens = admins.defaultTokens[chainId.toString()];
+
+  const AstroToken = admins.tokens[chainId.toString()].astro;
+  const AdaToken = admins.tokens[chainId.toString()].ada;
+  const WVLX = admins.tokens[chainId.toString()].wvlx;
+  save(chainId, "AstroToken", AstroToken);
+  save(chainId, "AdaToken", AdaToken);
+  save(chainId, "WVLX", WVLX);
 
   //deplay WETH, BUSD, USDT, USDC
   for (var i = 0; i < defaultTokens.length; i++) {
@@ -76,7 +83,7 @@ async function main() {
   //const blockNumber = await ethers.provider.getBlockNumber();
 
   const _startTimestamp = parseInt(new Date().getTime() / 1000);
-  const _endTimestamp = _startTimestamp + 3600 * 24 * 7;
+  const _endTimestamp = _startTimestamp + 3600 * 24 * 365;
   const _devaddr = admins._devaddr;
   //const bonusPeriodSeconds = 10000
   //const bonusEndTimestamp = _startTimestamp + bonusPeriodSeconds

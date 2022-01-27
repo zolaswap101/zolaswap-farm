@@ -40,7 +40,7 @@ async function main() {
   const data = get(chainId);
 
   //await transferOwnership(data.MasterChef, data.Timelock);
-  await transferOwnership(data.AstroToken, data.AstroFarm);
+  // await transferOwnership(data.AstroToken, data.AstroFarm);
   await transferOwnership(data.AstroStake, data.AstroFarm);
 }
 
