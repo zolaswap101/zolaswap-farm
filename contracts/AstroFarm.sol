@@ -200,7 +200,14 @@ contract AstroFarm is Ownable {
 
     function updateEndTimestamp(uint256 _endTimestamp) external onlyOwner {
         require(endTimestamp > block.timestamp, "Already ended");
+        require(_endTimestamp > block.timestamp, "Invalid");
         endTimestamp = _endTimestamp;
+    }
+
+    function updateStartTimestamp(uint256 _startTimestamp) external onlyOwner {
+        require(startTimestamp > block.timestamp, "Already started");
+        require(_startTimestamp > block.timestamp, "Invalid");
+        startTimestamp = _startTimestamp;
     }
 
     // Set the migrator contract. Can only be called by the owner.
