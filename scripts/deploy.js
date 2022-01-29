@@ -82,7 +82,9 @@ async function main() {
 
   //const blockNumber = await ethers.provider.getBlockNumber();
 
-  const _startTimestamp = parseInt(new Date().getTime() / 1000);
+  // const _startTimestamp = parseInt(new Date().getTime() / 1000);
+  // const _endTimestamp = _startTimestamp + 3600 * 24 * 365;
+  const _startTimestamp = 1643464800;
   const _endTimestamp = _startTimestamp + 3600 * 24 * 365;
   const _devaddr = admins._devaddr;
   //const bonusPeriodSeconds = 10000

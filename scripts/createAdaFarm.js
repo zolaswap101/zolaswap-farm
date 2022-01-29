@@ -42,6 +42,7 @@ async function main() {
 
   const names = [
     "ADA_ASTRO_LP",
+    "ADA_WVLX_LP",
     // "ADA_ETH_LP",
     // "ADA_USDT_LP",
     // "ADA_USDC_LP",
