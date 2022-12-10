@@ -5,8 +5,8 @@ import "./token/BEP20/IBEP20.sol";
 import "./token/BEP20/SafeBEP20.sol";
 import "./access/Ownable.sol";
 
-import "./AstroToken.sol";
-import "./AstroStake.sol";
+import "./ZolaToken.sol";
+import "./ZolaStake.sol";
 
 // import "@nomiclabs/buidler/console.sol";
 
@@ -23,14 +23,14 @@ interface IMigratorChef {
     function migrate(IBEP20 token) external returns (IBEP20);
 }
 
-// AstroFarm is the master of Astro. He can make Astro and he is a fair guy.
+// ZolaFarm is the master of Zola. He can make Zola and he is a fair guy.
 //
 // Note that it's ownable and the owner wields tremendous power. The ownership
 // will be transferred to a governance smart contract once CAKE is sufficiently
 // distributed and the community can show to govern itself.
 //
 // Have fun reading it. Hopefully it's bug-free. God bless.
-contract AstroFarm is Ownable {
+contract ZolaFarm is Ownable {
     using SafeMath for uint256;
     using SafeBEP20 for IBEP20;
 
@@ -60,9 +60,9 @@ contract AstroFarm is Ownable {
     }
 
     // The CAKE TOKEN!
-    AstroToken public cake;
+    ZolaToken public cake;
     // The SYRUP TOKEN!
-    AstroStake public syrup;
+    ZolaStake public syrup;
     // Dev address.
     address public devaddr;
     // CAKE tokens created per block.
@@ -303,9 +303,9 @@ contract AstroFarm is Ownable {
         pool.lastRewardTimestamp = block.timestamp;
     }
 
-    // Deposit LP tokens to AstroFarm for Astro allocation.
+    // Deposit LP tokens to AstroFarm for Zola allocation.
     function deposit(uint256 _pid, uint256 _amount) public {
-        require(_pid != 0, "deposit Astro by staking");
+        require(_pid != 0, "deposit Zola by staking");
 
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
@@ -354,7 +354,7 @@ contract AstroFarm is Ownable {
         emit Withdraw(msg.sender, _pid, _amount);
     }
 
-    // Stake Astro tokens to AstroFarm
+    // Stake Zola tokens to AstroFarm
     function enterStaking(uint256 _amount) public {
         PoolInfo storage pool = poolInfo[0];
         UserInfo storage user = userInfo[0][msg.sender];
@@ -383,7 +383,7 @@ contract AstroFarm is Ownable {
         emit Deposit(msg.sender, 0, _amount);
     }
 
-    // Withdraw Astro tokens from STAKING.
+    // Withdraw Zola tokens from STAKING.
     function leaveStaking(uint256 _amount) public {
         PoolInfo storage pool = poolInfo[0];
         UserInfo storage user = userInfo[0][msg.sender];

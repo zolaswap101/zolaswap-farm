@@ -8,7 +8,7 @@ async function sleep() {
 function save(chainId, name, value) {
   const fs = require("fs");
 
-  const filename = "../astro-addresses/" + chainId + ".json";
+  const filename = "../zola-addresses/" + chainId + ".json";
 
   const data = fs.existsSync(filename)
     ? JSON.parse(fs.readFileSync(filename, "utf8"))
@@ -52,31 +52,33 @@ async function main() {
   // usage is here
   //https://github.com/astro-swap/astro-swap-interface/blob/dev/src/constants/multicall/index.ts
 
-  const Multicall = await deploy("Multicall2");
-  // const AstroToken = await deploy("AstroToken");
+  //const Multicall = await deploy("Multicall2");
+  // const ZolaToken = await deploy("ZolaToken");
   // const AdaToken = await deploy("AdaToken");
 
   // const WVLX = await deploy("WVLX");
 
-  const admins = JSON.parse(
-    require("fs").readFileSync("../astro-addresses/admins.json", "utf8")
-  );
+  // const admins = JSON.parse(
+  //   require("fs").readFileSync("../astro-addresses/admins.json", "utf8")
+  // );
 
-  const defaultTokens = admins.defaultTokens[chainId.toString()];
+  // const defaultTokens = admins.defaultTokens[chainId.toString()];
 
-  const AstroToken = admins.tokens[chainId.toString()].astro;
-  const AdaToken = admins.tokens[chainId.toString()].ada;
-  const WVLX = admins.tokens[chainId.toString()].wvlx;
-  save(chainId, "AstroToken", AstroToken);
-  save(chainId, "AdaToken", AdaToken);
-  save(chainId, "WVLX", WVLX);
+  // const ZolaToken = admins.tokens[chainId.toString()].zola;
+  // const AdaToken = admins.tokens[chainId.toString()].ada;
+  // const WVLX = admins.tokens[chainId.toString()].wvlx;
+  // save(chainId, "ZolaToken", ZolaToken);
+  // save(chainId, "AdaToken", AdaToken);
+  // save(chainId, "WVLX", WVLX);
 
-  //deplay WETH, BUSD, USDT, USDC
-  for (var i = 0; i < defaultTokens.length; i++) {
-    await deploy(defaultTokens[i]);
-  }
+  // //deplay WETH, BUSD, USDT, USDC
+  // for (var i = 0; i < defaultTokens.length; i++) {
+  //   await deploy(defaultTokens[i]);
+  // }
 
-  const AstroStake = await deploy("AstroStake", [AstroToken]);
+  const ZolaToken = "0x8a226293bC6f697A681B0b29f825c149655fEC2d";
+
+  const ZolaStake = await deploy("ZolaStake", [ZolaToken]);
 
   const _cakePerSecond = "13000000000000000000";
 
@@ -86,7 +88,7 @@ async function main() {
   // const _endTimestamp = _startTimestamp + 3600 * 24 * 365;
   const _startTimestamp = 1643464800;
   const _endTimestamp = _startTimestamp + 3600 * 24 * 365;
-  const _devaddr = admins._devaddr;
+  const _devaddr = "0x0eFf70b92e1aDF79830dEA6f4EEA015CaD4f8483";
   //const bonusPeriodSeconds = 10000
   //const bonusEndTimestamp = _startTimestamp + bonusPeriodSeconds
   //const vlxStakingRewardPerSecond = '42000000000000000'
@@ -94,31 +96,31 @@ async function main() {
   //Timelock
   const Timelock = await deploy("Timelock", [_devaddr, 21700]);
 
-  const AstroFarm = await deploy("AstroFarm", [
-    AstroToken,
-    AstroStake,
+  const ZolaFarm = await deploy("ZolaFarm", [
+    ZolaToken,
+    ZolaStake,
     _devaddr,
     _cakePerSecond,
     _startTimestamp,
     _endTimestamp,
   ]);
 
-  const AstroVault = await deploy("AstroVault", [
-    AstroToken,
-    AstroStake,
-    AstroFarm,
+  const ZolaVault = await deploy("ZolaVault", [
+    ZolaToken,
+    ZolaStake,
+    ZolaFarm,
     _devaddr,
     _devaddr,
   ]);
 
-  await deploy("VaultOwner", [AstroVault]);
+  await deploy("VaultOwner", [ZolaVault]);
 
-  //await deploy("VLXStaking", [WVLX, AstroToken, vlxStakingRewardPerSecond, _startTimestamp, bonusEndTimestamp, _devaddr, WVLX]);
+  //await deploy("VLXStaking", [WVLX, ZolaToken, vlxStakingRewardPerSecond, _startTimestamp, bonusEndTimestamp, _devaddr, WVLX]);
 
-  await deploy("AstroStakingFactory");
+  // await deploy("ZolaStakingFactory");
 
   //MasterChef _chef, IBEP20 _astro, address _admin, address _receiver
-  //const LotteryRewardPool = await deploy("LotteryRewardPool", [AstroFarm, WagyuToken, _devaddr, _devaddr]);
+  //const LotteryRewardPool = await deploy("LotteryRewardPool", [ZolaFarm, WagyuToken, _devaddr, _devaddr]);
 }
 
 main()

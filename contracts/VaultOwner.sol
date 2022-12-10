@@ -1,18 +1,18 @@
 pragma solidity ^0.8.0;
 
-import "./AstroVault.sol";
+import "./ZolaVault.sol";
 
 contract VaultOwner is Ownable {
     using SafeBEP20 for IBEP20;
 
-    AstroVault public immutable astroVault;
+    ZolaVault public immutable zolaVault;
 
     /**
      * @notice Constructor
-     * @param _astroVaultAddress: AstroVault contract address
+     * @param _zolaVaultAddress: ZolaVault contract address
      */
-    constructor(address _astroVaultAddress) public {
-        astroVault = AstroVault(_astroVaultAddress);
+    constructor(address _zolaVaultAddress) public {
+        zolaVault = ZolaVault(_zolaVaultAddress);
     }
 
     /**
@@ -21,7 +21,7 @@ contract VaultOwner is Ownable {
      * It makes the admin == owner.
      */
     function setAdmin() external onlyOwner {
-        astroVault.setAdmin(address(this));
+        zolaVault.setAdmin(address(this));
     }
 
     /**
@@ -29,7 +29,7 @@ contract VaultOwner is Ownable {
      * @dev Only callable by the contract owner.
      */
     function setTreasury(address _treasury) external onlyOwner {
-        astroVault.setTreasury(_treasury);
+        zolaVault.setTreasury(_treasury);
     }
 
     /**
@@ -37,7 +37,7 @@ contract VaultOwner is Ownable {
      * @dev Only callable by the contract owner.
      */
     function setPerformanceFee(uint256 _performanceFee) external onlyOwner {
-        astroVault.setPerformanceFee(_performanceFee);
+        zolaVault.setPerformanceFee(_performanceFee);
     }
 
     /**
@@ -45,7 +45,7 @@ contract VaultOwner is Ownable {
      * @dev Only callable by the contract owner.
      */
     function setCallFee(uint256 _callFee) external onlyOwner {
-        astroVault.setCallFee(_callFee);
+        zolaVault.setCallFee(_callFee);
     }
 
     /**
@@ -53,7 +53,7 @@ contract VaultOwner is Ownable {
      * @dev Only callable by the contract owner.
      */
     function setWithdrawFee(uint256 _withdrawFee) external onlyOwner {
-        astroVault.setWithdrawFee(_withdrawFee);
+        zolaVault.setWithdrawFee(_withdrawFee);
     }
 
     /**
@@ -64,14 +64,14 @@ contract VaultOwner is Ownable {
         external
         onlyOwner
     {
-        astroVault.setWithdrawFeePeriod(_withdrawFeePeriod);
+        zolaVault.setWithdrawFeePeriod(_withdrawFeePeriod);
     }
 
     /**
      * @notice Withdraw unexpected tokens sent to the Astro Vault
      */
     function inCaseTokensGetStuck(address _token) external onlyOwner {
-        astroVault.inCaseTokensGetStuck(_token);
+        zolaVault.inCaseTokensGetStuck(_token);
         uint256 amount = IBEP20(_token).balanceOf(address(this));
         IBEP20(_token).safeTransfer(msg.sender, amount);
     }
@@ -81,7 +81,7 @@ contract VaultOwner is Ownable {
      * @dev Only possible when contract not paused.
      */
     function pause() external onlyOwner {
-        astroVault.pause();
+        zolaVault.pause();
     }
 
     /**
@@ -89,6 +89,6 @@ contract VaultOwner is Ownable {
      * @dev Only possible when contract is paused.
      */
     function unpause() external onlyOwner {
-        astroVault.unpause();
+        zolaVault.unpause();
     }
 }

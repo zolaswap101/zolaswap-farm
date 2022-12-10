@@ -3,15 +3,15 @@ pragma solidity 0.8.0;
 import "./token/BEP20/BEP20.sol";
 import "./math/SafeMath.sol";
 
-import "./AstroToken.sol";
+import "./ZolaToken.sol";
 
 // SyrupBar with Governance.
-contract AstroStake is BEP20("AstroStake Token", "AstroStake", 18) {
+contract ZolaStake is BEP20("ZolaStake Token", "ZolaStake", 18) {
     using SafeMath for uint256;
 
     mapping(address => bool) public isOperator;
 
-    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (AstroFarm).
+    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (ZolaFarm).
     function mint(address _to, uint256 _amount) public onlyOwner {
         _mint(_to, _amount);
         _moveDelegates(address(0), _delegates[_to], _amount);
@@ -23,9 +23,9 @@ contract AstroStake is BEP20("AstroStake Token", "AstroStake", 18) {
     }
 
     // The CAKE TOKEN!
-    AstroToken public cake;
+    ZolaToken public cake;
 
-    constructor(AstroToken _cake) public {
+    constructor(ZolaToken _cake) public {
         cake = _cake;
         isOperator[msg.sender] = true;
     }

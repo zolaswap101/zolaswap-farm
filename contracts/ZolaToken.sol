@@ -3,11 +3,11 @@ pragma solidity 0.8.0;
 import "./token/BEP20/BEP20.sol";
 import "./math/SafeMath.sol";
 
-// AstroToken with Governance.
-contract AstroToken is BEP20("AstroSwap Token", "ASTRO", 18) {
+// ZolaToken with Governance.
+contract ZolaToken is BEP20("ZolaSwap Token", "ZOLA", 18) {
     using SafeMath for uint256;
 
-    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (AstroFarm).
+    /// @notice Creates `_amount` token to `_to`. Must only be called by the owner (ZolaFarm).
 
     function burn(uint256 _amount) public {
         _burn(msg.sender, _amount);

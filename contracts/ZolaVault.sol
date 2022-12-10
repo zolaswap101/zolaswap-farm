@@ -10,7 +10,7 @@ import "./utils/Pausable.sol";
 
 // File: contracts/CakeVault.sol
 
-contract AstroVault is Ownable, Pausable {
+contract ZolaVault is Ownable, Pausable {
     using SafeBEP20 for IBEP20;
     using SafeMath for uint256;
 
