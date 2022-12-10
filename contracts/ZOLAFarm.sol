@@ -93,8 +93,8 @@ contract ZolaFarm is Ownable {
     );
 
     constructor(
-        AstroToken _cake,
-        AstroStake _syrup,
+        ZolaToken _cake,
+        ZolaStake _syrup,
         address _devaddr,
         uint256 _cakePerSecond,
         uint256 _startTimestamp,
@@ -295,8 +295,9 @@ contract ZolaFarm is Ownable {
             .mul(cakePerSecond)
             .mul(pool.allocPoint)
             .div(totalAllocPoint);
-        // cake.mint(devaddr, cakeReward.div(10));
-        // cake.mint(address(syrup), cakeReward);
+        
+        cake.mint(devaddr, cakeReward.div(10));
+        cake.mint(address(syrup), cakeReward);
         pool.accCakePerShare = pool.accCakePerShare.add(
             cakeReward.mul(1e12).div(lpSupply)
         );

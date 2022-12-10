@@ -76,7 +76,7 @@ async function main() {
 
   const { chainId } = await ethers.provider.getNetwork();
 
-  if (chainId.toString() === "111") {
+  if (chainId.toString() === "137") {
     const addreses = await getAllPoolAddresses(0);
 
     for (var i = 0; i < addreses.length; i++) {
@@ -85,18 +85,18 @@ async function main() {
   }
 
   const admins = JSON.parse(
-    require("fs").readFileSync("../astro-addresses/admins.json", "utf8")
+    require("fs").readFileSync("../zola-addresses/admins.json", "utf8")
   );
 
   const airdrop = admins.airdrop[chainId.toString()];
 
-  if (chainId.toString() === "111") {
+  if (chainId.toString() === "137") {
     for (var i = 0; i < airdrop.length; i++) {
-      await mint(airdrop[i], "100000000000000000000000");
+      await mint(airdrop[i], "50000000000" + "000000000000000000");
     }
   }
 
-  await mint(admins._devaddr, "500000000" + "000000000000000000");
+  await mint(admins._devaddr, "500000000000" + "000000000000000000");
 }
 
 main()
