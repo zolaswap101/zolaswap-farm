@@ -9,8 +9,12 @@
     "coverage": "npx builder coverage"
   },
   "dependencies": {
+    "@nomiclabs/hardhat-ethers": "2.0.0",
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
     "@openzeppelin/test-helpers": "^0.5.6",
     "@pancakeswap/pancake-swap-lib": "^0.0.1",
+    "dotenv": "^16.0.1",
+    "hardhat-gas-reporter": "^1.0.8",
     "truffle": "^5.1.58",
     "truffle-flattener": "^1.4.4"
   },
@@ -22,8 +26,9 @@
     "@nomiclabs/buidler-web3": "^1.3.4",
     "chai": "^4.2.0",
     "ethereum-waffle": "^3.0.0",
-    "ethers": "^5.0.14",
-    "solidity-coverage": "^0.7.13",
+    "ethers": "^5.6.9",
+    "hardhat": "2.9.7",
+    "solidity-coverage": "^0.7.21",
     "truffle-hdwallet-provider": "^1.0.17",
     "truffle-plugin-verify": "^0.4.0",
     "web3": "^1.3.0"

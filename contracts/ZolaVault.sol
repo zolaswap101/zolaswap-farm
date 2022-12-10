@@ -1,16 +1,16 @@
 pragma solidity ^0.8.0;
 
-import './token/BEP20/IBEP20.sol';
-import './token/BEP20/SafeBEP20.sol';
-import './access/Ownable.sol';
-import './interfaces/IMasterChef.sol';
-import './math/SafeMath.sol';
-import './utils/Address.sol';
-import './utils/Pausable.sol';
+import "./token/BEP20/IBEP20.sol";
+import "./token/BEP20/SafeBEP20.sol";
+import "./access/Ownable.sol";
+import "./interfaces/IMasterChef.sol";
+import "./math/SafeMath.sol";
+import "./utils/Address.sol";
+import "./utils/Pausable.sol";
 
 // File: contracts/CakeVault.sol
 
-contract WagyuVault is Ownable, Pausable {
+contract ZolaVault is Ownable, Pausable {
     using SafeBEP20 for IBEP20;
     using SafeMath for uint256;
 
@@ -43,9 +43,18 @@ contract WagyuVault is Ownable, Pausable {
     uint256 public withdrawFee = 10; // 0.1%
     uint256 public withdrawFeePeriod = 72 hours; // 3 days
 
-    event Deposit(address indexed sender, uint256 amount, uint256 shares, uint256 lastDepositedTime);
+    event Deposit(
+        address indexed sender,
+        uint256 amount,
+        uint256 shares,
+        uint256 lastDepositedTime
+    );
     event Withdraw(address indexed sender, uint256 amount, uint256 shares);
-    event Harvest(address indexed sender, uint256 performanceFee, uint256 callFee);
+    event Harvest(
+        address indexed sender,
+        uint256 performanceFee,
+        uint256 callFee
+    );
     event Pause();
     event Unpause();
 
@@ -71,7 +80,10 @@ contract WagyuVault is Ownable, Pausable {
         treasury = _treasury;
 
         // Infinite approve
-        IBEP20(_token).safeApprove(address(_masterchef), 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF);
+        IBEP20(_token).safeApprove(
+            address(_masterchef),
+            0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+        );
     }
 
     /**
@@ -114,7 +126,9 @@ contract WagyuVault is Ownable, Pausable {
 
         totalShares = totalShares.add(currentShares);
 
-        user.cakeAtLastUserAction = user.shares.mul(balanceOf()).div(totalShares);
+        user.cakeAtLastUserAction = user.shares.mul(balanceOf()).div(
+            totalShares
+        );
         user.lastUserActionTime = block.timestamp;
 
         _earn();
@@ -173,7 +187,10 @@ contract WagyuVault is Ownable, Pausable {
      * @dev Only callable by the contract admin.
      */
     function setPerformanceFee(uint256 _performanceFee) external onlyAdmin {
-        require(_performanceFee <= MAX_PERFORMANCE_FEE, "performanceFee cannot be more than MAX_PERFORMANCE_FEE");
+        require(
+            _performanceFee <= MAX_PERFORMANCE_FEE,
+            "performanceFee cannot be more than MAX_PERFORMANCE_FEE"
+        );
         performanceFee = _performanceFee;
     }
 
@@ -182,7 +199,10 @@ contract WagyuVault is Ownable, Pausable {
      * @dev Only callable by the contract admin.
      */
     function setCallFee(uint256 _callFee) external onlyAdmin {
-        require(_callFee <= MAX_CALL_FEE, "callFee cannot be more than MAX_CALL_FEE");
+        require(
+            _callFee <= MAX_CALL_FEE,
+            "callFee cannot be more than MAX_CALL_FEE"
+        );
         callFee = _callFee;
     }
 
@@ -191,7 +211,10 @@ contract WagyuVault is Ownable, Pausable {
      * @dev Only callable by the contract admin.
      */
     function setWithdrawFee(uint256 _withdrawFee) external onlyAdmin {
-        require(_withdrawFee <= MAX_WITHDRAW_FEE, "withdrawFee cannot be more than MAX_WITHDRAW_FEE");
+        require(
+            _withdrawFee <= MAX_WITHDRAW_FEE,
+            "withdrawFee cannot be more than MAX_WITHDRAW_FEE"
+        );
         withdrawFee = _withdrawFee;
     }
 
@@ -199,7 +222,10 @@ contract WagyuVault is Ownable, Pausable {
      * @notice Sets withdraw fee period
      * @dev Only callable by the contract admin.
      */
-    function setWithdrawFeePeriod(uint256 _withdrawFeePeriod) external onlyAdmin {
+    function setWithdrawFeePeriod(uint256 _withdrawFeePeriod)
+        external
+        onlyAdmin
+    {
         require(
             _withdrawFeePeriod <= MAX_WITHDRAW_FEE_PERIOD,
             "withdrawFeePeriod cannot be more than MAX_WITHDRAW_FEE_PERIOD"
@@ -219,8 +245,14 @@ contract WagyuVault is Ownable, Pausable {
      * @notice Withdraw unexpected tokens sent to the Cake Vault
      */
     function inCaseTokensGetStuck(address _token) external onlyAdmin {
-        require(_token != address(token), "Token cannot be same as deposit token");
-        require(_token != address(receiptToken), "Token cannot be same as receipt token");
+        require(
+            _token != address(token),
+            "Token cannot be same as deposit token"
+        );
+        require(
+            _token != address(receiptToken),
+            "Token cannot be same as receipt token"
+        );
 
         uint256 amount = IBEP20(_token).balanceOf(address(this));
         IBEP20(_token).safeTransfer(msg.sender, amount);
@@ -260,7 +292,11 @@ contract WagyuVault is Ownable, Pausable {
      * @notice Calculates the total pending rewards that can be restaked
      * @return Returns total pending cake rewards
      */
-    function calculateTotalPendingCakeRewards() external view returns (uint256) {
+    function calculateTotalPendingCakeRewards()
+        external
+        view
+        returns (uint256)
+    {
         uint256 amount = IMasterChef(masterchef).pendingCake(0, address(this));
         amount = amount.add(available());
 
@@ -299,13 +335,17 @@ contract WagyuVault is Ownable, Pausable {
         }
 
         if (block.timestamp < user.lastDepositedTime.add(withdrawFeePeriod)) {
-            uint256 currentWithdrawFee = currentAmount.mul(withdrawFee).div(10000);
+            uint256 currentWithdrawFee = currentAmount.mul(withdrawFee).div(
+                10000
+            );
             token.safeTransfer(treasury, currentWithdrawFee);
             currentAmount = currentAmount.sub(currentWithdrawFee);
         }
 
         if (user.shares > 0) {
-            user.cakeAtLastUserAction = user.shares.mul(balanceOf()).div(totalShares);
+            user.cakeAtLastUserAction = user.shares.mul(balanceOf()).div(
+                totalShares
+            );
         } else {
             user.cakeAtLastUserAction = 0;
         }
